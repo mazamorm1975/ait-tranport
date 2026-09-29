@@ -59,3 +59,20 @@ docker compose down --volumes
 
 `date` filtra por la fecha de creación (`createdAt`), y los filtros de origen y
 destino buscan coincidencias parciales sin distinguir mayúsculas de minúsculas.
+
+## Asignar conductor y adjuntar archivos
+
+- `POST /v1/orders/{orderId}/assignment` asigna un conductor. Envía
+  `{"driverId":"<UUID del conductor>"}`; solo permite órdenes `CREATED` y
+  conductores activos. Cada orden puede tener una asignación.
+- `GET /v1/orders/{orderId}/assignment` consulta la asignación y los archivos adjuntos.
+- `POST /v1/orders/{orderId}/assignment/document` recibe `multipart/form-data`
+  con el campo `file` y acepta un PDF (máximo 10 MB).
+- `POST /v1/orders/{orderId}/assignment/image` recibe `multipart/form-data`
+  con el campo `file` y acepta una imagen PNG o JPG (máximo 10 MB).
+- `GET /v1/orders/{orderId}/assignment/files/{type}` descarga el archivo;
+  `{type}` es `DOCUMENT` o `IMAGE`.
+
+Los archivos se guardan en MySQL y se pueden cargar de nuevo para reemplazar el
+archivo del mismo tipo. En Swagger, crea primero una asignación y luego usa los
+endpoints de carga seleccionando el archivo en el campo `file`.
