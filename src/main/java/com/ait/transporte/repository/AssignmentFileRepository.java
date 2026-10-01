@@ -9,7 +9,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AssignmentFileRepository extends JpaRepository<AssignmentFile, UUID> {
+
+    //Se realizan los derived queries
     List<AssignmentFile> findAllByAssignment_Id(UUID assignmentId);
 
+    //Devuelve el archivo asignado: Document o Image
     Optional<AssignmentFile> findByAssignment_IdAndType(UUID assignmentId, AssignmentFileType type);
 }

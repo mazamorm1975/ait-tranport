@@ -5,6 +5,7 @@ import com.ait.transporte.repository.AssignmentFileRepository;
 import com.ait.transporte.repository.OrderAssignmentRepository;
 import com.ait.transporte.service.IDriverService;
 import com.ait.transporte.service.IOrderService;
+import com.ait.transporte.utils.UtilsHelperClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
@@ -30,8 +31,9 @@ class OrderAssignmentServiceImplTest {
         driverService = mock(IDriverService.class);
         assignmentRepository = mock(OrderAssignmentRepository.class);
         fileRepository = mock(AssignmentFileRepository.class);
+        UtilsHelperClass mapper = mock(UtilsHelperClass.class);
         service = new OrderAssignmentServiceImpl(
-                orderService, driverService, assignmentRepository, fileRepository);
+                orderService, driverService, assignmentRepository, fileRepository, mapper);
     }
 
     @Test

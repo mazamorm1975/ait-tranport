@@ -16,6 +16,7 @@ public class DriverDTO {
     private String licenceNumber;
     private Boolean active;
 
+
     public static DriverDTO fromEntity(Driver driver) {
         return new DriverDTO(
                 driver.getIdDriver(),
@@ -26,6 +27,11 @@ public class DriverDTO {
     }
 
     public Driver toEntity() {
-        return new Driver(idDriver, name, licenceNumber, active);
+        Driver driver = new Driver();
+        driver.setIdDriver(idDriver);
+        driver.setName(name);
+        driver.setLicenceNumber(licenceNumber);
+        driver.setActive(active);
+        return  driver;
     }
 }

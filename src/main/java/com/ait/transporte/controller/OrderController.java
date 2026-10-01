@@ -50,7 +50,7 @@ public class OrderController {
     @PutMapping("/updateOrder/{id}")
     public ResponseEntity<OrderDTO> updateOrder(@RequestBody OrderDTO orderDTO, @PathVariable("id") UUID id) throws Exception {
         orderService.findById(id);
-        Order modifyRecordCategory = UtilsHelperClass.modifyRecordCategoryFields(orderDTO.toEntity(), id);
+        Order modifyRecordCategory = UtilsHelperClass.modifyRecordOrderFields(orderDTO.toEntity(), id);
         Order updatedRecord = orderService.update(modifyRecordCategory, id);
         return ResponseEntity.ok(OrderDTO.fromEntity(updatedRecord));
     }

@@ -29,4 +29,7 @@ public class Driver {
     @Column(name = "active", nullable = false)
     private Boolean active;
 
+    @Column(name = "password_hash")
+    private String passwordHash;
+
 }
