@@ -46,6 +46,26 @@ Para eliminar también el volumen y los datos de MySQL:
 ```powershell
 docker compose down --volumes
 ```
+## Autenticación con JWT
+
+1. Inicia la aplicación y envía una petición `POST` a `http://localhost:8080/login` con `Content-Type: application/json` y las credenciales de un conductor registrado:
+
+   ```json
+   {
+     "name": "Mario",
+     "password": "tu_contraseña"
+   }
+2.
+Si las credenciales son válidas, el servicio responde con un token:
+{
+  "access_token": "<jwt>"
+}
+3.
+Para acceder a los endpoints protegidos, envía el token en el encabezado:
+Authorization: Bearer <jwt>
+En Postman, selecciona Authorization → Bearer Token y pega el token sin escribir Bearer; Postman agrega ese prefijo automáticamente.
+
+En tu implementación, la propiedad de respuesta se llama `access_token`, y el login recibe `name`
 
 ## Consultar órdenes
 
