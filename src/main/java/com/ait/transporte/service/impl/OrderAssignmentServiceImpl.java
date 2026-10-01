@@ -9,7 +9,6 @@ import com.ait.transporte.repository.OrderAssignmentRepository;
 import com.ait.transporte.service.IDriverService;
 import com.ait.transporte.service.IOrderService;
 import com.ait.transporte.service.OrderAssignmentService;
-import com.ait.transporte.utils.UtilsHelperClass;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +30,6 @@ public class OrderAssignmentServiceImpl implements OrderAssignmentService {
     private final IDriverService driverService;
     private final OrderAssignmentRepository assignmentRepository;
     private final AssignmentFileRepository fileRepository;
-    private final UtilsHelperClass mapper;
 
     //Se realizan todas las validaciones para que se respeten las reglas de negocio.
     @Override
@@ -67,13 +65,13 @@ public class OrderAssignmentServiceImpl implements OrderAssignmentService {
         assignment.setDriver(driver);
         assignment.setAssignedAt(LocalDateTime.now());
         assignment = assignmentRepository.save(assignment);
-        return mapper.toDTO(assignment);
+        return toDTO(assignment);
     }
 
     @Override
     @Transactional(readOnly = true)
     public OrderAssignmentDTO getAssignment(UUID orderId) {
-        return mapper.toDTO(findAssignment(orderId));
+        return toDTO(findAssignment(orderId));
     }
 
 
@@ -124,15 +122,13 @@ public class OrderAssignmentServiceImpl implements OrderAssignmentService {
     }
 
 
-    /* El siguiente metodo se genero por IA pero lo simplifique utilizando un metodo que desarrolle
-    // en la clase utilitaria UtilsHelperClass con la libreria ModelMapper
     private OrderAssignmentDTO toDTO(OrderAssignment assignment) {
         List<AssignmentFileDTO> files = fileRepository.findAllByAssignment_Id(assignment.getId())
                 .stream()
                 .map(AssignmentFileDTO::fromEntity)
                 .toList();
         return OrderAssignmentDTO.fromEntity(assignment, files);
-    }*/
+    }
 
     //Se validan los dos tipos de archivos: DOCUMENT o PNG o JPG
     private String validateFile(AssignmentFileType type, String extension, byte[] content) {

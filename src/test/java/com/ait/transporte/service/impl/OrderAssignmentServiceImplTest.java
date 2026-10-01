@@ -5,11 +5,12 @@ import com.ait.transporte.repository.AssignmentFileRepository;
 import com.ait.transporte.repository.OrderAssignmentRepository;
 import com.ait.transporte.service.IDriverService;
 import com.ait.transporte.service.IOrderService;
-import com.ait.transporte.utils.UtilsHelperClass;
+import com.ait.transporte.dto.OrderAssignmentDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,9 +32,40 @@ class OrderAssignmentServiceImplTest {
         driverService = mock(IDriverService.class);
         assignmentRepository = mock(OrderAssignmentRepository.class);
         fileRepository = mock(AssignmentFileRepository.class);
-        UtilsHelperClass mapper = mock(UtilsHelperClass.class);
         service = new OrderAssignmentServiceImpl(
-                orderService, driverService, assignmentRepository, fileRepository, mapper);
+                orderService, driverService, assignmentRepository, fileRepository);
+    }
+
+    @Test
+    void assignsDriverAndMapsResponse() {
+        UUID orderId = UUID.randomUUID();
+        UUID driverId = UUID.randomUUID();
+        Order order = new Order();
+        order.setIdOrder(orderId);
+        order.setStatus(OrderStatus.CREATED);
+        Driver driver = new Driver();
+        driver.setIdDriver(driverId);
+        driver.setName("Mario");
+        driver.setActive(true);
+        when(orderService.findById(orderId)).thenReturn(order);
+        when(assignmentRepository.findByOrder_IdOrder(orderId)).thenReturn(Optional.empty());
+        when(driverService.findById(driverId)).thenReturn(driver);
+        when(assignmentRepository.save(any(OrderAssignment.class)))
+                .thenAnswer(invocation -> {
+                    OrderAssignment assignment = invocation.getArgument(0);
+                    assignment.setId(UUID.randomUUID());
+                    return assignment;
+                });
+        when(fileRepository.findAllByAssignment_Id(any(UUID.class))).thenReturn(List.of());
+
+        OrderAssignmentDTO response = service.assignDriver(orderId, driverId);
+
+        assertEquals(orderId, response.orderId());
+        assertEquals(driverId, response.driverId());
+        assertEquals("Mario", response.driverName());
+        assertNotNull(response.id());
+        assertNotNull(response.assignedAt());
+        assertTrue(response.files().isEmpty());
     }
 
     @Test
